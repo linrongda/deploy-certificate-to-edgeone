@@ -215,10 +215,10 @@ node-fetch@^2.2.0:
   dependencies:
     whatwg-url "^5.0.0"
 
-tencentcloud-sdk-nodejs@^4.0.914:
-  version "4.0.914"
-  resolved "https://registry.yarnpkg.com/tencentcloud-sdk-nodejs/-/tencentcloud-sdk-nodejs-4.0.914.tgz#395f8f9fdf0c9166c15fa5817ac9112282e081f4"
-  integrity sha512-7DlOlK7DxLkneM7XpjB6SOBK+YTyZJHOibw8CWUAY/M6LLW8AEokFXdD8v/M787cJiBev3g9qVtXKhFFfYOH3A==
+tencentcloud-sdk-nodejs@^4.1.75:
+  version "4.1.115"
+  resolved "https://registry.npmjs.org/tencentcloud-sdk-nodejs/-/tencentcloud-sdk-nodejs-4.1.115.tgz#15b2af42efe53d12d8b9d3a634228e0b4756af2d"
+  integrity sha512-7BD1hCmcOUThlhL48LFZJ66YqpkJuBH8fRkJywIGhyLrQ+Kk2SptPoP0ECIPf2aPgGWm0FMNNHyOQT1Jk53G/A==
   dependencies:
     form-data "^3.0.0"
     get-stream "^6.0.0"

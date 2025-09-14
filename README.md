@@ -1,4 +1,4 @@
-# GitHub Action — Upload & Deploy SSL certificate to Tencent EdgeOne
+# GitHub Action — Deploy SSL certificate to Tencent EdgeOne
 
 ## Usage
 ```yaml
@@ -14,7 +14,7 @@ jobs:
           ref: ${{ github.ref }}
 
       - name: Deploy cert to EdgeOne
-        uses: linrongda/deploy-to-edgeone@v1
+        uses: linrongda/deploy-certificate-to-edgeone@v1
         with:
           secret-id: ${{ secrets.TENCENTCLOUD_SECRET_ID }}
           secret-key: ${{ secrets.TENCENTCLOUD_SECRET_KEY }}

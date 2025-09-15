@@ -97,7 +97,7 @@ async function deployToEdgeOne(siteId, hosts, certId) {
     ZoneId: siteId,
     Hosts: hostsArray,
     Mode: 'sslcert',
-    ServerCertInfo: hostsArray.map(() => ({ CertId: certId }))
+    ServerCertInfo: [{ CertId: certId }]
   };
 
   core.debug('ModifyHostsCertificate params: ' + JSON.stringify(params));

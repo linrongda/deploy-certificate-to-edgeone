@@ -38,7 +38,7 @@ const sharedClientConfig = {
 };
 
 async function uploadCertificate(certPem, keyPem) {
-  core.info('Uploading certificate to Tencent SSL service...');
+  core.startGroup('Uploading certificate to Tencent SSL service...');
   const SSLClient = tencentcloud.ssl.v20191205.Client;
   const sslClient = new SSLClient({
     ...sharedClientConfig,
@@ -66,11 +66,12 @@ async function uploadCertificate(certPem, keyPem) {
   }
 
   core.info(`Uploaded certificate, CertificateId=${newCertId}`);
+  core.endGroup();
   return newCertId;
 }
 
 async function queryCdnDomainCerts(domains) {
-  core.info('Querying CDN domain certificate bindings...');
+  core.startGroup('Querying CDN domain certificate bindings...');
   const CDNClient = tencentcloud.cdn.v20180606.Client;
   const cdnClient = new CDNClient({
     ...sharedClientConfig,
@@ -95,13 +96,13 @@ async function queryCdnDomainCerts(domains) {
   try {
     const data = await cdnClient.DescribeDomainsConfig(params);
     core.info('Success: DescribeDomainsConfig');
-    core.debug(JSON.stringify(data));
+    core.info(JSON.stringify(data));
 
     const res = (data.Domains || []).map((domain) => ({
       domain: domain.Domain,
       certId: domain.Https?.CertInfo?.CertId,
     }));
-    core.debug(JSON.stringify(res));
+    core.info(JSON.stringify(res));
     return res;
 
   } catch (err) {
@@ -109,9 +110,13 @@ async function queryCdnDomainCerts(domains) {
     core.setFailed(err.message || String(err));
     throw err;
   }
+  finally {
+    core.endGroup();
+  }
 }
 
 async function updateCert(oldCertId, newCertId) {
+  core.startGroup('Updating certificate binding: ' + oldCertId + ' -> ' + newCertId);
   const client = new tencentcloud.ssl.v20191205.Client({
     ...sharedClientConfig,
     profile: {
@@ -130,8 +135,7 @@ async function updateCert(oldCertId, newCertId) {
 
   try {
     const data = await client.UpdateCertificateInstance(params);
-    core.info('Success: UpdateCertificateInstance ' + oldCertId + ' -> ' + newCertId);
-    core.debug(JSON.stringify(data));
+    core.info(JSON.stringify(data));
   } catch (err) {
     core.error(err.stack || err.message || err);
     core.setFailed(err.message || String(err));
@@ -144,8 +148,8 @@ async function updateCert(oldCertId, newCertId) {
 
     try {
       const data = await client.UpdateCertificateInstance(params);
-      core.debug(JSON.stringify(data));
-      const isDone = (data.DeployRecordId >= 0);
+      core.info(JSON.stringify(data));
+      const isDone = (data.DeployRecordId !== 0);
       if (isDone) {
         core.info('Update task completed');
         return;
@@ -158,6 +162,7 @@ async function updateCert(oldCertId, newCertId) {
   }
 
   core.error('Update task timeout');
+  core.endGroup();
 }
 
 const DELETE_STATUS_MAP = {
@@ -170,6 +175,7 @@ const DELETE_STATUS_MAP = {
 };
 
 async function deleteCertificates(certIds) {
+  core.startGroup('Deleting certificates: ' + certIds.join(', '));
   const client = new tencentcloud.ssl.v20191205.Client({
     ...sharedClientConfig,
     profile: {
@@ -188,10 +194,10 @@ async function deleteCertificates(certIds) {
   try {
     const data = await client.DeleteCertificates(params);
     core.info('Success: DeleteCertificates');
-    core.debug(JSON.stringify(data));
+    core.info(JSON.stringify(data));
 
     const certTaskIds = data.CertTaskIds || [];
-    core.debug(JSON.stringify(certTaskIds));
+    core.info(JSON.stringify(certTaskIds));
     taskIds = certTaskIds.map((x) => x.TaskId);
 
   } catch (err) {
@@ -207,10 +213,10 @@ async function deleteCertificates(certIds) {
     try {
       const data = await client.DescribeDeleteCertificatesTaskResult({ TaskIds: taskIds });
       core.info('Success: DescribeDeleteCertificatesTaskResult');
-      core.debug(JSON.stringify(data));
+      core.info(JSON.stringify(data));
 
       const tasks = data.DeleteTaskResult || [];
-      core.debug(
+      core.info(
         tasks
           .map((task) =>
             [
@@ -237,6 +243,7 @@ async function deleteCertificates(certIds) {
   }
 
   core.error('Delete task timeout');
+  core.endGroup();
 }
 
 async function main() {

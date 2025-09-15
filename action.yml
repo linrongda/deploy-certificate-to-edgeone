@@ -1,5 +1,5 @@
-name: Deploy SSL certificate to Tencent EdgeOne
-description: Deploy SSL certificate to Tencent EdgeOne.
+name: Deploy SSL certificate to Tencent Cloud
+description: Deploy SSL certificate to Tencent Cloud.
 branding:
   icon: lock
   color: blue
@@ -16,15 +16,9 @@ inputs:
   key-file:
     description: The file path of the PEM private key file.
     required: true
-  eo-site-id:
-    description: The EdgeOne Site/Zone ID where domains are hosted.
-    required: true
-  eo-domains:
+  cdn-domains:
     description: Newline-separated list of hostnames (domains) within the site to apply the certificate to.
     required: true
-  eo-endpoint:
-    description: EdgeOne API endpoint (defaults to teo.tencentcloudapi.com)
-    required: false
 runs:
   using: node16
   main: bootstrap.js

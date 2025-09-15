@@ -76,7 +76,7 @@ async function uploadCertificate(certPem, keyPem) {
 
 async function deployToEdgeOne(siteId, hosts, certId) {
   core.info('Deploying certificate to EdgeOne...');
-  const TeoClient = tencentcloud.teo?.v20220610?.Client || tencentcloud.teo?.v20220106?.Client || tencentcloud.teo?.Client;
+  const TeoClient = tencentcloud.teo.v20220901.Client;
   const clientConfig = {
     ...sharedClientConfig,
     profile: {
@@ -111,7 +111,7 @@ async function deployToEdgeOne(siteId, hosts, certId) {
     } else {
       // Fallback to common client request
       const common = new tencentcloud.common.CommonClient(clientConfig);
-      const resp = await common.request('ModifyHostsCertificate', params, '2022-06-10');
+      const resp = await common.request('ModifyHostsCertificate', params, '2022-09-01');
       core.info('ModifyHostsCertificate success (common client): ' + JSON.stringify(resp));
       return resp;
     }

@@ -259,6 +259,7 @@ async function main() {
     for (const oldCertId of oldCertIds) {
       await updateCert(oldCertId, certId);
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000*60));
     await deleteCertificates(oldCertIds);
 
   } catch (e) {
